@@ -13,13 +13,6 @@ const settingsForm = document.getElementById("settingsForm");
 const tabButtons = Array.from(document.querySelectorAll("[data-tab-button]"));
 const tabPanels = Array.from(document.querySelectorAll("[data-tab-panel]"));
 
-const videosPath = document.getElementById("videosPath");
-const videoCount = document.getElementById("videoCount");
-const soundsPath = document.getElementById("soundsPath");
-const soundCount = document.getElementById("soundCount");
-const stopSoundsPath = document.getElementById("stopSoundsPath");
-const stopSoundCount = document.getElementById("stopSoundCount");
-
 const breakIntervalMinutesField = document.getElementById("breakIntervalMinutes");
 const overlayDurationSecondsField = document.getElementById("overlayDurationSeconds");
 const soundEnabledField = document.getElementById("soundEnabled");
@@ -29,6 +22,7 @@ let currentState = null;
 let currentSettings = null;
 let activeTab = "timer";
 let saveStatusTimeout = null;
+let hasSyncedWindowHeight = false;
 
 const PLAY_ICON = `
   <svg viewBox="0 0 24 24" fill="currentColor">
@@ -75,6 +69,24 @@ function showSaveStatus(message) {
     saveStatus.textContent = "";
     saveStatusTimeout = null;
   }, 3000);
+}
+
+function syncWindowHeightToTimerLayout() {
+  if (hasSyncedWindowHeight) {
+    return;
+  }
+
+  const appShell = document.querySelector(".app-shell");
+
+  if (!appShell) {
+    return;
+  }
+
+  const nextHeight = Math.ceil(appShell.getBoundingClientRect().height + 24);
+  hasSyncedWindowHeight = true;
+  window.bunchoAPI.resizeSettingsWindow(nextHeight).catch(() => {
+    hasSyncedWindowHeight = false;
+  });
 }
 
 function formatSeconds(totalSeconds) {
@@ -223,10 +235,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const data = await window.bunchoAPI.getSettingsData();
   applySettings(data.settings);
   applyState(data.state);
-  stopSoundCount.textContent = `${data.stopSoundCount} 個`;
-  stopSoundsPath.textContent = data.stopSoundsPath;
-  videosPath.textContent = data.videosPath;
-  videoCount.textContent = `${data.videoCount} 個`;
-  soundsPath.textContent = data.soundsPath;
-  soundCount.textContent = `${data.soundCount} 個`;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      syncWindowHeightToTimerLayout();
+    });
+  });
 });

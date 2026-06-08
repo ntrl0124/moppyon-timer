@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
-    "check": "node --check src/main.js && node --check src/preload.js && node --check src/constants.js && node --check src/settings-store.js && node --check renderer/settings.js && node --check renderer/overlay.js"
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/constants.js && node --check src/settings-store.js && node --check renderer/settings.js && node --check renderer/overlay.js",
+    "pack:mac": "electron-builder --dir --mac --universal",
+    "dist:mac": "electron-builder --mac --universal"
   },
   "keywords": [
     "electron",
@@ -16,7 +18,70 @@
   ],
   "author": "",
   "license": "MIT",
+  "build": {
+    "appId": "jp.torica.moppyon-timer",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!assets{,/**/*}",
+      "!build{,/**/*}",
+      "!dist{,/**/*}"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "mac": {
+      "artifactName": "${name}-${version}-${arch}.${ext}",
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true,
+      "notarize": true,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "type": "file",
+          "x": 144,
+          "y": 190
+        },
+        {
+          "path": "/Applications",
+          "type": "link",
+          "x": 396,
+          "y": 190
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    }
+  },
   "devDependencies": {
-    "electron": "^31.0.2"
+    "electron": "^31.0.2",
+    "electron-builder": "24.13.3"
   }
 }

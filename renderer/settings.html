@@ -18,7 +18,7 @@
           <span class="hero-icon-wrap" aria-hidden="true">
             <img
               class="hero-icon"
-              src="../assets/tray/bunchoTemplate@2x.png"
+              src="./bunchoHero.svg"
               alt=""
               width="52"
               height="52"
@@ -72,24 +72,6 @@
             </svg>
           </span>
           設定
-        </button>
-        <button
-          id="tab-assets"
-          class="tab-button"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          aria-controls="panel-assets"
-          data-tab-button="assets"
-          tabindex="-1"
-        >
-          <span class="button-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5z" />
-              <path d="M3.5 9h17" />
-            </svg>
-          </span>
-          素材
         </button>
       </nav>
 
@@ -214,47 +196,6 @@
               <input id="autoStartTimer" name="autoStartTimer" type="checkbox" />
             </label>
           </form>
-        </section>
-      </section>
-
-      <section
-        id="panel-assets"
-        class="tab-panel"
-        role="tabpanel"
-        aria-labelledby="tab-assets"
-        data-tab-panel="assets"
-        hidden
-      >
-        <section class="asset-card">
-          <h2>
-            <span class="button-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5z" />
-                <path d="M3.5 9h17" />
-              </svg>
-            </span>
-            素材
-          </h2>
-          <dl class="asset-list">
-            <div>
-              <dt>動画フォルダ</dt>
-              <dd id="videosPath"></dd>
-              <p class="mt-1 text-muted text-xs">認識した動画数： <span id="videoCount"></span></p>
-            </div>
-            <div>
-              <dt>音声フォルダ</dt>
-              <dd id="soundsPath"></dd>
-              <p class="mt-1 text-muted text-xs">認識した wav 数： <span id="soundCount"></span></p>
-            </div>
-            <div>
-              <dt>休憩終了SEフォルダ</dt>
-              <dd id="stopSoundsPath"></dd>
-              <p class="mt-1 text-muted text-xs">認識した終了SE数： <span id="stopSoundCount"></span></p>
-            </div>
-          </dl>
-          <p class="asset-note text-xs">
-            開始音がない場合も終了SEがない場合も、無音のままで動作します。
-          </p>
         </section>
       </section>
     </main>

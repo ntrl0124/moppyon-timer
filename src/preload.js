@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld("bunchoAPI", {
   },
   pauseTimer: () => ipcRenderer.invoke("timer:pause"),
   resetTimer: () => ipcRenderer.invoke("timer:reset"),
+  resizeSettingsWindow: (contentHeight) =>
+    ipcRenderer.invoke("settings:resize-window", contentHeight),
   resumeTimer: () => ipcRenderer.invoke("timer:resume"),
   saveSettings: (settings) => ipcRenderer.invoke("settings:save", settings),
   showBreakNow: () => ipcRenderer.invoke("timer:show-now"),

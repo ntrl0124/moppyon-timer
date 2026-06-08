@@ -1,6 +1,5 @@
 const stateBadge = document.getElementById("stateBadge");
 const message = document.getElementById("message");
-const supportingText = document.getElementById("supportingText");
 const bunchoVideo = document.getElementById("bunchoVideo");
 const fallbackMessage = document.getElementById("fallbackMessage");
 const remainingLabel = document.getElementById("remainingLabel");
@@ -121,8 +120,7 @@ async function playAudioSnippet(soundUrl, snippetDurationSeconds = 5) {
 function startOverlay(payload) {
   isBreakFinished = false;
   stateBadge.textContent = "BREAK TIME";
-  message.textContent = payload.message;
-  supportingText.textContent = "席を離れて、目と肩をほぐしましょう。";
+  message.textContent = payload.message || "席を離れて、目と肩をほぐしましょう。";
 
   if (payload.videoExists && payload.videoUrl) {
     bunchoVideo.src = payload.videoUrl;

@@ -32,12 +32,17 @@ let isPaused = false;
 let overlayLockedUntil = null;
 let isFinishingBreak = false;
 let isBreakFinished = false;
+let preferredSettingsContentHeight = null;
 
 const OVERLAY_SOUND_EXTENSIONS = new Set([".wav"]);
 const STOP_SOUND_EXTENSIONS = new Set([".wav", ".mp3", ".m4a", ".aac", ".ogg"]);
 
 function getAppAssetPath(...segments) {
-  return path.join(app.getAppPath(), "assets", ...segments);
+  const assetsRoot = app.isPackaged
+    ? path.join(process.resourcesPath, "assets")
+    : path.join(app.getAppPath(), "assets");
+
+  return path.join(assetsRoot, ...segments);
 }
 
 function getBreakIntervalMs() {
@@ -487,12 +492,13 @@ function openSettingsWindow() {
 
   settingsWindow = new BrowserWindow({
     width: 520,
-    height: 760,
+    height: preferredSettingsContentHeight ?? 700,
     minWidth: 480,
-    minHeight: 700,
+    minHeight: 620,
     title: "文鳥休憩タイマー設定",
     backgroundColor: "#f6f6f9",
     autoHideMenuBar: true,
+    useContentSize: true,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -556,19 +562,29 @@ function startTimerFromSettings() {
 function registerIpcHandlers() {
   ipcMain.handle("settings:get-data", () => ({
     settings,
-    state: getStateSnapshot(),
-    stopSoundCount: listStopSoundFiles().length,
-    stopSoundsPath: getAppAssetPath("stop_sounds"),
-    videosPath: getAppAssetPath("videos"),
-    videoCount: listVideoFiles().length,
-    soundCount: listSoundFiles().length,
-    soundsPath: getAppAssetPath("sounds")
+    state: getStateSnapshot()
   }));
 
   ipcMain.handle("settings:save", (_event, nextSettings) => ({
     settings: applySettings(nextSettings),
     state: getStateSnapshot()
   }));
+  ipcMain.handle("settings:resize-window", (_event, requestedHeight) => {
+    if (!settingsWindow || settingsWindow.isDestroyed()) {
+      return null;
+    }
+
+    const normalizedHeight = Math.max(
+      620,
+      Math.min(760, Math.ceil(Number(requestedHeight) || 0))
+    );
+
+    preferredSettingsContentHeight = normalizedHeight;
+    const [currentWidth] = settingsWindow.getContentSize();
+    settingsWindow.setContentSize(currentWidth, normalizedHeight);
+
+    return normalizedHeight;
+  });
 
   ipcMain.handle("timer:pause", () => pauseTimer());
   ipcMain.handle("timer:reset", () => resetTimer());
