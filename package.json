@@ -1,0 +1,22 @@
+{
+  "name": "moppyon-timer",
+  "version": "0.1.0",
+  "description": "Buncho-themed break timer for macOS built with Electron.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/constants.js && node --check src/settings-store.js && node --check renderer/settings.js && node --check renderer/overlay.js"
+  },
+  "keywords": [
+    "electron",
+    "macos",
+    "break-timer",
+    "buncho"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.2"
+  }
+}

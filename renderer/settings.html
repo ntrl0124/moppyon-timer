@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; media-src 'self' file: data:; style-src 'self' 'unsafe-inline'; script-src 'self';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>もっぴょんタイマー設定</title>
+    <link rel="stylesheet" href="./settings.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-card">
+        <p class="eyebrow">BUNCHO BREAK TIMER</p>
+        <div class="hero-title-row">
+          <span class="hero-icon-wrap" aria-hidden="true">
+            <img
+              class="hero-icon"
+              src="../assets/tray/bunchoTemplate@2x.png"
+              alt=""
+              width="52"
+              height="52"
+            />
+          </span>
+          <h1>もっぴょんタイマー</h1>
+        </div>
+        <p class="description">
+          起動中は自動で休憩タイマーが進み、時間になると文鳥が休憩を促します。
+        </p>
+      </section>
+
+      <nav class="tab-bar" role="tablist" aria-label="設定画面のタブ">
+        <button
+          id="tab-timer"
+          class="tab-button is-active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-timer"
+          data-tab-button="timer"
+        >
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="13" r="7" />
+              <path d="M12 9v4l2.5 1.5" />
+              <path d="M9 3h6" />
+              <path d="M12 6v1" />
+            </svg>
+          </span>
+          タイマー
+        </button>
+        <button
+          id="tab-settings"
+          class="tab-button"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-settings"
+          data-tab-button="settings"
+          tabindex="-1"
+        >
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h10" />
+              <path d="M18 7h2" />
+              <path d="M14 7a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z" />
+              <path d="M4 17h2" />
+              <path d="M10 17h10" />
+              <path d="M6 17a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z" />
+            </svg>
+          </span>
+          設定
+        </button>
+        <button
+          id="tab-assets"
+          class="tab-button"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-assets"
+          data-tab-button="assets"
+          tabindex="-1"
+        >
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5z" />
+              <path d="M3.5 9h17" />
+            </svg>
+          </span>
+          素材
+        </button>
+      </nav>
+
+      <section
+        id="panel-timer"
+        class="tab-panel is-active"
+        role="tabpanel"
+        aria-labelledby="tab-timer"
+        data-tab-panel="timer"
+      >
+        <section class="status-card">
+          <div class="status-layout">
+            <div
+              id="progressRing"
+              class="progress-ring"
+              role="progressbar"
+              aria-label="次の休憩までの進捗"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="100"
+            >
+              <div class="progress-ring__inner">
+                <p id="statusLead" class="status-lead">次の休憩まで</p>
+                <p id="statusTime" class="status-time">00:00</p>
+              </div>
+            </div>
+          </div>
+          <div class="action-grid">
+            <button id="pauseResumeButton" class="primary-button action-button" type="button">
+              <span id="pauseResumeIcon" class="button-icon" aria-hidden="true"></span>
+              <span id="pauseResumeText" class="button-copy">一時停止</span>
+            </button>
+            <button id="resetButton" class="secondary-button action-button" type="button">
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 3-6.708" />
+                  <path d="M3 4v5h5" />
+                </svg>
+              </span>
+              <span class="button-copy">タイマーをリセット</span>
+            </button>
+            <button id="skipButton" class="secondary-button action-button" type="button">
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4.75 5.5a.75.75 0 0 1 1.161-.626L13 9.842V5.625a.75.75 0 0 1 1.161-.626l7.5 4.875a.75.75 0 0 1 0 1.252l-7.5 4.875A.75.75 0 0 1 13 15.375v-4.217l-7.089 4.968A.75.75 0 0 1 4.75 15.5z" />
+                </svg>
+              </span>
+              <span class="button-copy">次の休憩をスキップ</span>
+            </button>
+            <button id="showNowButton" class="secondary-button action-button" type="button">
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
+                  <path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z" />
+                </svg>
+              </span>
+              <span class="button-copy">今すぐ休憩を表示</span>
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <section
+        id="panel-settings"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tab-settings"
+        data-tab-panel="settings"
+        hidden
+      >
+        <section class="settings-card">
+          <div class="section-header">
+            <div class="section-title-group">
+              <h2>
+                <span class="button-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7h10" />
+                    <path d="M18 7h2" />
+                    <path d="M14 7a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z" />
+                    <path d="M4 17h2" />
+                    <path d="M10 17h10" />
+                    <path d="M6 17a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z" />
+                  </svg>
+                </span>
+                設定
+              </h2>
+              <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
+            </div>
+            <button id="saveButton" class="primary-button compact" type="button">保存</button>
+          </div>
+
+          <form id="settingsForm" class="settings-form">
+            <div class="timing-grid">
+              <label class="field-card">
+                <span>休憩通知の間隔</span>
+                <select id="breakIntervalMinutes" name="breakIntervalMinutes">
+                  <option value="15">15分</option>
+                  <option value="30">30分</option>
+                  <option value="45">45分</option>
+                  <option value="60">60分</option>
+                </select>
+              </label>
+
+              <label class="field-card">
+                <span>オーバーレイ表示時間</span>
+                <select id="overlayDurationSeconds" name="overlayDurationSeconds">
+                  <option value="30">30秒</option>
+                  <option value="60">1分</option>
+                  <option value="180">3分</option>
+                  <option value="300">5分</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="toggle-row">
+              <span>音声を鳴らす</span>
+              <input id="soundEnabled" name="soundEnabled" type="checkbox" />
+            </label>
+
+            <label class="toggle-row">
+              <span>起動時に自動でタイマー開始</span>
+              <input id="autoStartTimer" name="autoStartTimer" type="checkbox" />
+            </label>
+          </form>
+        </section>
+      </section>
+
+      <section
+        id="panel-assets"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tab-assets"
+        data-tab-panel="assets"
+        hidden
+      >
+        <section class="asset-card">
+          <h2>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5z" />
+                <path d="M3.5 9h17" />
+              </svg>
+            </span>
+            素材
+          </h2>
+          <dl class="asset-list">
+            <div>
+              <dt>動画フォルダ</dt>
+              <dd id="videosPath"></dd>
+              <p class="mt-1 text-muted text-xs">認識した動画数： <span id="videoCount"></span></p>
+            </div>
+            <div>
+              <dt>音声フォルダ</dt>
+              <dd id="soundsPath"></dd>
+              <p class="mt-1 text-muted text-xs">認識した wav 数： <span id="soundCount"></span></p>
+            </div>
+            <div>
+              <dt>休憩終了SEフォルダ</dt>
+              <dd id="stopSoundsPath"></dd>
+              <p class="mt-1 text-muted text-xs">認識した終了SE数： <span id="stopSoundCount"></span></p>
+            </div>
+          </dl>
+          <p class="asset-note text-xs">
+            開始音がない場合も終了SEがない場合も、無音のままで動作します。
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <script src="./settings.js"></script>
+  </body>
+</html>

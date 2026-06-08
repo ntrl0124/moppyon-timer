@@ -1,0 +1,155 @@
+:root {
+  color-scheme: light;
+  --text: #2d2830;
+  --muted: rgba(109, 100, 112, 0.88);
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-line: rgba(54, 49, 57, 0.1);
+  --accent: #d4548b;
+  --accent-strong: #b33672;
+  font-family: "Avenir Next", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(212, 84, 139, 0.16), transparent 26%),
+    rgba(22, 18, 24, 0.54);
+}
+
+.overlay-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.overlay-card {
+  width: min(880px, 100%);
+  padding: 28px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 32%),
+    radial-gradient(circle at 85% 0%, rgba(212, 84, 139, 0.22), transparent 30%),
+    var(--panel);
+  border: 1px solid var(--panel-line);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+}
+
+h1 {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: clamp(24px, 4vw, 39px);
+  line-height: 1.12;
+}
+
+.supporting-text {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.6;
+}
+
+.media-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 22px;
+  background: rgba(241, 241, 246, 0.96);
+  border: 1px solid rgba(179, 54, 114, 0.12);
+}
+
+video,
+.fallback-message {
+  width: 100%;
+  height: 100%;
+}
+
+video {
+  display: block;
+  object-fit: cover;
+  background: #f1f1f4;
+}
+
+.fallback-message {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.fallback-message p {
+  margin: 0;
+}
+
+.status-panel {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(212, 84, 139, 0.1);
+  border: 1px solid rgba(212, 84, 139, 0.22);
+  box-shadow: 0 16px 40px rgba(179, 54, 114, 0.08);
+}
+
+.status-panel p {
+  margin: 0;
+  color: var(--accent-strong);
+}
+
+.status-panel__primary {
+  font-size: clamp(18px, 2.4vw, 24px);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.status-panel__secondary {
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.close-button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 16px 18px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff9fc;
+  font: inherit;
+  font-weight: 700;
+}
+
+.close-button:disabled {
+  background: rgba(45, 40, 48, 0.08);
+  color: rgba(45, 40, 48, 0.48);
+}
+
+@media (max-width: 720px) {
+  .overlay-shell {
+    padding: 16px;
+  }
+
+  .overlay-card {
+    padding: 20px;
+  }
+}
