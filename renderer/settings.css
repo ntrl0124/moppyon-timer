@@ -270,6 +270,7 @@ label {
   border-radius: 18px;
   span {
     color: var(--accent-strong);
+    font-size: 12px;
   }
 }
 
