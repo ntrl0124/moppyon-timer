@@ -33,6 +33,7 @@ let overlayLockedUntil = null;
 let isFinishingBreak = false;
 let isBreakFinished = false;
 let preferredSettingsContentHeight = null;
+let wasOpenedAtLogin = false;
 
 const OVERLAY_SOUND_EXTENSIONS = new Set([".wav"]);
 const STOP_SOUND_EXTENSIONS = new Set([".wav", ".mp3", ".m4a", ".aac", ".ogg"]);
@@ -255,6 +256,16 @@ function refreshTrayMenu() {
 
   tray.setContextMenu(contextMenu);
   refreshTrayTitle();
+}
+
+function syncLaunchAtLoginSetting() {
+  if (process.platform !== "darwin" || !app.isPackaged) {
+    return;
+  }
+
+  app.setLoginItemSettings({
+    openAtLogin: settings.launchAtLogin
+  });
 }
 
 function clearTimerTimeout() {
@@ -537,6 +548,10 @@ function applySettings(nextSettings) {
     }
   }
 
+  if (previousSettings.launchAtLogin !== settings.launchAtLogin) {
+    syncLaunchAtLoginSetting();
+  }
+
   broadcastSettings();
   broadcastState();
   refreshTrayMenu();
@@ -606,9 +621,15 @@ function registerIpcHandlers() {
 
 app.whenReady().then(() => {
   settings = readSettings();
+  wasOpenedAtLogin = process.platform === "darwin" && app.getLoginItemSettings().wasOpenedAtLogin;
+  syncLaunchAtLoginSetting();
   registerIpcHandlers();
   createTray();
-  openSettingsWindow();
+
+  if (!wasOpenedAtLogin) {
+    openSettingsWindow();
+  }
+
   startTimerFromSettings();
 
   statusInterval = setInterval(() => {

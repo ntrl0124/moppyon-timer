@@ -14,9 +14,10 @@ const tabButtons = Array.from(document.querySelectorAll("[data-tab-button]"));
 const tabPanels = Array.from(document.querySelectorAll("[data-tab-panel]"));
 
 const breakIntervalMinutesField = document.getElementById("breakIntervalMinutes");
-const overlayDurationSecondsField = document.getElementById("overlayDurationSeconds");
+const overlayDurationMinutesField = document.getElementById("overlayDurationMinutes");
 const soundEnabledField = document.getElementById("soundEnabled");
 const autoStartTimerField = document.getElementById("autoStartTimer");
+const launchAtLoginField = document.getElementById("launchAtLogin");
 
 let currentState = null;
 let currentSettings = null;
@@ -35,6 +36,19 @@ const PAUSE_ICON = `
     <path d="M7 5.75A1.75 1.75 0 0 1 8.75 4h1.5A1.75 1.75 0 0 1 12 5.75v12.5A1.75 1.75 0 0 1 10.25 20h-1.5A1.75 1.75 0 0 1 7 18.25zM12 5.75A1.75 1.75 0 0 1 13.75 4h1.5A1.75 1.75 0 0 1 17 5.75v12.5A1.75 1.75 0 0 1 15.25 20h-1.5A1.75 1.75 0 0 1 12 18.25z" />
   </svg>
 `;
+
+const DECIMAL_PRECISION = 1000;
+const DEFAULT_MINIMUM_MINUTES = 0.1;
+const timingFieldConfigs = [
+  {
+    field: breakIntervalMinutesField,
+    label: "休憩通知の間隔"
+  },
+  {
+    field: overlayDurationMinutesField,
+    label: "休憩（オーバーレイ表示）時間"
+  }
+];
 
 function setActiveTab(nextTab) {
   activeTab = nextTab;
@@ -97,6 +111,61 @@ function formatSeconds(totalSeconds) {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
+function roundToPrecision(value) {
+  return Math.round(value * DECIMAL_PRECISION) / DECIMAL_PRECISION;
+}
+
+function formatDecimalInput(value) {
+  return String(roundToPrecision(value));
+}
+
+function secondsToMinutes(value) {
+  return roundToPrecision(value / 60);
+}
+
+function minutesToSeconds(value) {
+  return roundToPrecision(value * 60);
+}
+
+function validateNumberField(field, label) {
+  const rawValue = field.value.trim();
+  const minimumValue = Number(field.min || DEFAULT_MINIMUM_MINUTES);
+
+  if (!rawValue) {
+    field.setCustomValidity(`${label}を入力してください。`);
+    return false;
+  }
+
+  const numericValue = Number(rawValue);
+
+  if (!Number.isFinite(numericValue)) {
+    field.setCustomValidity(`${label}は数値で入力してください。`);
+    return false;
+  }
+
+  if (numericValue < minimumValue) {
+    field.setCustomValidity(
+      `${label}は${formatDecimalInput(minimumValue)}分以上で入力してください。`
+    );
+    return false;
+  }
+
+  field.setCustomValidity("");
+  return true;
+}
+
+function validateSettingsForm({ report = false } = {}) {
+  const isValid = timingFieldConfigs.every(({ field, label }) =>
+    validateNumberField(field, label)
+  );
+
+  if (report && !isValid) {
+    settingsForm.reportValidity();
+  }
+
+  return isValid;
+}
+
 function getProgressValue(state) {
   if (!currentSettings) {
     return 1;
@@ -136,10 +205,13 @@ function renderStatusDetails(state) {
 
 function applySettings(settings) {
   currentSettings = settings;
-  breakIntervalMinutesField.value = String(settings.breakIntervalMinutes);
-  overlayDurationSecondsField.value = String(settings.overlayDurationSeconds);
+  breakIntervalMinutesField.value = formatDecimalInput(settings.breakIntervalMinutes);
+  overlayDurationMinutesField.value = formatDecimalInput(
+    secondsToMinutes(settings.overlayDurationSeconds)
+  );
   soundEnabledField.checked = settings.soundEnabled;
   autoStartTimerField.checked = settings.autoStartTimer;
+  launchAtLoginField.checked = settings.launchAtLogin;
 
   if (currentState) {
     progressRing.style.setProperty("--progress", String(getProgressValue(currentState)));
@@ -162,12 +234,17 @@ function readForm() {
   return {
     autoStartTimer: autoStartTimerField.checked,
     breakIntervalMinutes: Number(breakIntervalMinutesField.value),
-    overlayDurationSeconds: Number(overlayDurationSecondsField.value),
+    launchAtLogin: launchAtLoginField.checked,
+    overlayDurationSeconds: minutesToSeconds(Number(overlayDurationMinutesField.value)),
     soundEnabled: soundEnabledField.checked
   };
 }
 
 saveButton.addEventListener("click", async () => {
+  if (!validateSettingsForm({ report: true })) {
+    return;
+  }
+
   const result = await window.bunchoAPI.saveSettings(readForm());
   applySettings(result.settings);
   applyState(result.state);
@@ -195,11 +272,19 @@ showNowButton.addEventListener("click", async () => {
   applyState(await window.bunchoAPI.showBreakNow());
 });
 
-settingsForm.addEventListener("input", () => {
+settingsForm.addEventListener("input", (event) => {
+  if (event.target instanceof HTMLInputElement && event.target.type === "number") {
+    event.target.setCustomValidity("");
+  }
+
   clearSaveStatus();
 });
 
-settingsForm.addEventListener("change", () => {
+settingsForm.addEventListener("change", (event) => {
+  if (event.target instanceof HTMLInputElement && event.target.type === "number") {
+    event.target.setCustomValidity("");
+  }
+
   clearSaveStatus();
 });
 

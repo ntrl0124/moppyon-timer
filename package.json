@@ -44,7 +44,6 @@
       "entitlementsInherit": "build/entitlements.mac.inherit.plist",
       "gatekeeperAssess": false,
       "hardenedRuntime": true,
-      "notarize": true,
       "target": [
         {
           "target": "dmg",

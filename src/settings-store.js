@@ -2,24 +2,28 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { app } = require("electron");
 
-const {
-  ALLOWED_INTERVALS,
-  ALLOWED_OVERLAY_DURATIONS,
-  DEFAULT_SETTINGS
-} = require("./constants");
+const { DEFAULT_SETTINGS } = require("./constants");
+
+const DECIMAL_PRECISION = 1000;
+const MINIMUM_BREAK_INTERVAL_MINUTES = 0.1;
+const MINIMUM_OVERLAY_DURATION_SECONDS = 6;
 
 function getSettingsPath() {
   return path.join(app.getPath("userData"), "settings.json");
 }
 
-function pickAllowedNumber(rawValue, allowedValues, fallback) {
+function roundToPrecision(value) {
+  return Math.round(value * DECIMAL_PRECISION) / DECIMAL_PRECISION;
+}
+
+function normalizeNumericSetting(rawValue, fallback, minimumValue) {
   const numericValue = Number(rawValue);
 
   if (!Number.isFinite(numericValue)) {
     return fallback;
   }
 
-  return allowedValues.includes(numericValue) ? numericValue : fallback;
+  return roundToPrecision(Math.max(minimumValue, numericValue));
 }
 
 function normalizeSettings(rawSettings = {}) {
@@ -28,27 +32,28 @@ function normalizeSettings(rawSettings = {}) {
     ...rawSettings
   };
 
-  const overlayDurationSeconds = pickAllowedNumber(
+  const overlayDurationSeconds = normalizeNumericSetting(
     mergedSettings.overlayDurationSeconds,
-    ALLOWED_OVERLAY_DURATIONS,
-    DEFAULT_SETTINGS.overlayDurationSeconds
+    DEFAULT_SETTINGS.overlayDurationSeconds,
+    MINIMUM_OVERLAY_DURATION_SECONDS
   );
 
-  const closeDelaySeconds = Math.min(
+  const closeDelaySeconds = roundToPrecision(Math.min(
     DEFAULT_SETTINGS.closeDelaySeconds,
     overlayDurationSeconds
-  );
+  ));
 
   return {
-    breakIntervalMinutes: pickAllowedNumber(
+    breakIntervalMinutes: normalizeNumericSetting(
       mergedSettings.breakIntervalMinutes,
-      ALLOWED_INTERVALS,
-      DEFAULT_SETTINGS.breakIntervalMinutes
+      DEFAULT_SETTINGS.breakIntervalMinutes,
+      MINIMUM_BREAK_INTERVAL_MINUTES
     ),
     overlayDurationSeconds,
     closeDelaySeconds,
     soundEnabled: Boolean(mergedSettings.soundEnabled),
-    autoStartTimer: Boolean(mergedSettings.autoStartTimer)
+    autoStartTimer: Boolean(mergedSettings.autoStartTimer),
+    launchAtLogin: Boolean(mergedSettings.launchAtLogin)
   };
 }
 

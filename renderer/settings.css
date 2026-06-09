@@ -282,18 +282,46 @@ label span {
 }
 
 select,
+input,
 button {
   border: none;
   border-radius: 14px;
   font: inherit;
 }
 
+input,
 select {
   width: 100%;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--line);
   color: var(--text);
+}
+
+.input-with-unit {
+  position: relative;
+}
+
+.input-with-unit input {
+  padding-right: 44px;
+}
+
+.field-unit {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.field-hint {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
 }
 
 .toggle-row {

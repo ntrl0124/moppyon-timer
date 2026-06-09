@@ -17,15 +17,11 @@ const DEFAULT_SETTINGS = {
   overlayDurationSeconds: 60,
   closeDelaySeconds: 10,
   soundEnabled: true,
-  autoStartTimer: true
+  autoStartTimer: true,
+  launchAtLogin: false
 };
 
-const ALLOWED_INTERVALS = [15, 30, 45, 60];
-const ALLOWED_OVERLAY_DURATIONS = [30, 60, 180, 300];
-
 module.exports = {
-  ALLOWED_INTERVALS,
-  ALLOWED_OVERLAY_DURATIONS,
   BREAK_MESSAGES,
   DEFAULT_SETTINGS
 };

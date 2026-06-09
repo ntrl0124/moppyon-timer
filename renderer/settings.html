@@ -27,7 +27,8 @@
           <h1>もっぴょんタイマー</h1>
         </div>
         <p class="description">
-          起動中は自動で休憩タイマーが進み、時間になると文鳥が休憩を促します。
+          起動中は自動で休憩タイマーが進み、時間になると<br>
+          文鳥のもなかがぴょんぴょん跳ねて、休憩時間をお知らせします。
         </p>
       </section>
 
@@ -167,22 +168,42 @@
             <div class="timing-grid">
               <label class="field-card">
                 <span>休憩通知の間隔</span>
-                <select id="breakIntervalMinutes" name="breakIntervalMinutes">
-                  <option value="15">15分</option>
-                  <option value="30">30分</option>
-                  <option value="45">45分</option>
-                  <option value="60">60分</option>
-                </select>
+                <div class="input-with-unit">
+                  <input
+                    id="breakIntervalMinutes"
+                    name="breakIntervalMinutes"
+                    type="number"
+                    inputmode="decimal"
+                    min="0.1"
+                    step="any"
+                    required
+                    aria-describedby="breakIntervalMinutesHint"
+                  />
+                  <span class="field-unit" aria-hidden="true">分</span>
+                </div>
+                <small id="breakIntervalMinutesHint" class="field-hint">
+                  0.5分など、小数も入力できます。
+                </small>
               </label>
 
               <label class="field-card">
-                <span>オーバーレイ表示時間</span>
-                <select id="overlayDurationSeconds" name="overlayDurationSeconds">
-                  <option value="30">30秒</option>
-                  <option value="60">1分</option>
-                  <option value="180">3分</option>
-                  <option value="300">5分</option>
-                </select>
+                <span>休憩（オーバーレイ表示）時間</span>
+                <div class="input-with-unit">
+                  <input
+                    id="overlayDurationMinutes"
+                    name="overlayDurationMinutes"
+                    type="number"
+                    inputmode="decimal"
+                    min="0.1"
+                    step="any"
+                    required
+                    aria-describedby="overlayDurationMinutesHint"
+                  />
+                  <span class="field-unit" aria-hidden="true">分</span>
+                </div>
+                <small id="overlayDurationMinutesHint" class="field-hint">
+                  0.5分など、小数も入力できます。
+                </small>
               </label>
             </div>
 
@@ -194,6 +215,11 @@
             <label class="toggle-row">
               <span>起動時に自動でタイマー開始</span>
               <input id="autoStartTimer" name="autoStartTimer" type="checkbox" />
+            </label>
+
+            <label class="toggle-row">
+              <span>Mac ログイン時に自動で起動</span>
+              <input id="launchAtLogin" name="launchAtLogin" type="checkbox" />
             </label>
           </form>
         </section>
